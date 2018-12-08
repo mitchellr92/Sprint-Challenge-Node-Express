@@ -46,12 +46,52 @@ server.post('/projects', (req, res) => {
                 })
             })
             .catch(err => {
-                res.status(500).json({message: 'Failed to insert project'})
+                res.status(500).json({ message: 'Failed to insert project' })
             })
     } else {
         res.status(400).json({
             message: 'Missing name or description'
         })
+    }
+})
+
+server.delete('/projects/:id', (req, res) => {
+
+    const { id } = req.params;
+    const project = req.body;
+
+    projectDb.remove(id)
+        .then(count => {
+            if (count) {
+                res.json(project)
+            } else {
+                res.status(404).json({ message: 'Porject with specified ID does not exist' })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to delete project' })
+        })
+})
+
+server.put('/projects/:id', (req, res) => {
+
+    const { id } = req.params;
+    const project = req.body;
+
+    if (project.name && project.description) {
+        projectDb.update(id, project)
+            .then(project => {
+                if (id) {
+                    res.json({ message: 'Project has been updated' })
+                } else {
+                    res.status(404).json({ message: 'The project with the specified ID does not exist' })
+                }
+            })
+            .catch(err => {
+                res.status(500).json({ message: 'Failed to update project' })
+            })
+    } else {
+        res.status(400).json({ message: 'Missing name or description' })
     }
 })
 
