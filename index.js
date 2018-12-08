@@ -141,7 +141,7 @@ server.get('/actions/:id', (req, res) => {
 })
 
 server.post('/actions', (req, res) => {
-// Giving an error when trying to return the updated action
+    // Giving an error when trying to return the updated action
     const action = req.body;
 
     if (action.project_id && action.description && action.notes) {
@@ -179,8 +179,26 @@ server.delete('/actions/:id', (req, res) => {
         })
 })
 
-server.put('/actions', (req, res) => {
+server.put('/actions/:id', (req, res) => {
 
+    const { id } = req.params;
+    const action = req.body;
+
+    if (action.project_id && action.description && action.notes) {
+        actionDb.update(id, action)
+            .then(action => {
+                if (id) {
+                    res.json({ message: 'Action has been updated' })
+                } else {
+                    res.status(404).json({ message: 'Action with specified ID does not exist' })
+                }
+            })
+            .catch(err => {
+                res.status(500).json({ message: 'Failed to update action' })
+            })
+    } else {
+        res.status(400).json({ message: 'Missing porject ID, description or notes' })
+    }
 })
 
 server.listen(PORT, () => {
