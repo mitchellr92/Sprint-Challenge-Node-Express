@@ -1,5 +1,6 @@
 const express = require('express');
 const projectDb = require('./data/helpers/projectModel.js')
+const actionDb = require('./data/helpers/actionModel.js');
 
 const server = express();
 const PORT = 1010;
@@ -110,6 +111,45 @@ server.put('/projects/:id', (req, res) => {
     } else {
         res.status(400).json({ message: 'Missing name or description' })
     }
+})
+
+server.get('/actions', (req, res) => {
+    actionDb.get()
+        .then(actions => {
+            res.json(actions)
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to load actions' })
+        })
+})
+
+server.get('/actions/:id', (req, res) => {
+
+    const { id } = req.params;
+
+    actionDb.get(id)
+        .then(action => {
+            if (action) {
+                res.json(action)
+            } else {
+                res.status(404).json({ message: 'Action with specified ID does not exist' })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to load action' })
+        })
+})
+
+server.post('/actions', (req, res) => {
+
+})
+
+server.delete('/actions', (req, res) => {
+
+})
+
+server.put('/actions', (req, res) => {
+
 })
 
 server.listen(PORT, () => {
