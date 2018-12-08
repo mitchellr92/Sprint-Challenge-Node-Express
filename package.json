@@ -1,0 +1,8 @@
+{
+  "name": "Sprint-Challenge-Node-Express",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/mitchellr92/Sprint-Challenge-Node-Express.git",
+  "author": "<mitchellr92@live.com>",
+  "license": "MIT"
+}
