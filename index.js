@@ -141,11 +141,42 @@ server.get('/actions/:id', (req, res) => {
 })
 
 server.post('/actions', (req, res) => {
+// Giving an error when trying to return the updated action
+    const action = req.body;
 
+    if (action.project_id && action.description && action.notes) {
+        actionDb.insert(action)
+            .then(idInfo => {
+                actionDb.insert(idInfo.id).then(action => {
+                    res.status(201).json(project)
+                })
+            })
+            .catch(err => {
+                res.status(500).json({ message: 'Failed to insert action' })
+            })
+    } else {
+        res.status(400).json({
+            message: 'Missing project ID, description or notes'
+        })
+    }
 })
 
-server.delete('/actions', (req, res) => {
+server.delete('/actions/:id', (req, res) => {
 
+    const { id } = req.params;
+    const action = req.body;
+
+    actionDb.remove(id)
+        .then(count => {
+            if (count) {
+                res.json(action)
+            } else {
+                res.status(404).json({ message: 'Action with specified ID does not exist' })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to delete action' })
+        })
 })
 
 server.put('/actions', (req, res) => {
