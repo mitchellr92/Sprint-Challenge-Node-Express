@@ -34,6 +34,23 @@ server.get('/projects/:id', (req, res) => {
         })
 })
 
+server.get('/projects/:id/actions', (req, res) => {
+
+    const { id } = req.params;
+
+    projectDb.getProjectActions(id)
+        .then(projectActions => {
+            if (projectActions) {
+                res.json(projectActions)
+            } else {
+                res.status(404).json({ message: 'Project with specified ID does not exist' })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to load project actions' })
+        })
+})
+
 server.post('/projects', (req, res) => {
 
     const project = req.body;
